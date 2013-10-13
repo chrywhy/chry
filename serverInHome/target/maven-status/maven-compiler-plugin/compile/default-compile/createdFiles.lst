@@ -1,0 +1,4 @@
+com\serverinhome\gateServer\EditEndpoint.class
+com\serverinhome\resource\ApplicationConfig.class
+com\serverinhome\resource\NameStorageBean.class
+com\serverinhome\resource\HelloWorldResource.class
