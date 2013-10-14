@@ -36,8 +36,8 @@
         
         getUri: function() {
             var rootUrl =  "ws://" + (document.location.hostname == "" ? "localhost" : document.location.hostname) + ":" +
-                    (document.location.port == "" ? "80" : document.location.port);
-            return rootUrl + "/edit";
+                    (document.location.port == "" ? "8080" : document.location.port);
+            return rootUrl + "/signIn";
         },
 
         initialize: function () {

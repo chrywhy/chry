@@ -12,11 +12,11 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-@ServerEndpoint("/signIn")
-public class SignIn {
+@ServerEndpoint("/register")
+public class Register {
 
     private static Set<Session> peers = Collections.newSetFromMap(new ConcurrentHashMap<Session, Boolean>());
-    private static String _text = "signIn";
+    private static String _text = "register";
 
     @OnOpen
     public void onOpen(Session client) throws IOException, EncodeException {
