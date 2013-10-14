@@ -32,9 +32,9 @@ public class SignIn {
 
     @OnMessage
     public void shapeCreated(String message, Session client) throws IOException, EncodeException {
+        _text = message;
         for (Session otherSession : peers) {
             if (!otherSession.equals(client)) {
-                _text = message;
 //                System.out.print("################# message = " + message);
                 otherSession.getBasicRemote().sendText(message);
             }
