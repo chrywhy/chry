@@ -1,4 +1,4 @@
-package com.serverinhome.gateServer;
+package com.serverinhome.gate.websocket;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -12,11 +12,11 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-@ServerEndpoint("/register")
-public class Register {
+@ServerEndpoint("/edit")
+public class EditEndpoint {
 
     private static Set<Session> peers = Collections.newSetFromMap(new ConcurrentHashMap<Session, Boolean>());
-    private static String _text = "register";
+    private static String _text = "";
 
     @OnOpen
     public void onOpen(Session client) throws IOException, EncodeException {

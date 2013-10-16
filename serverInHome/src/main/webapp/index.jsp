@@ -9,7 +9,7 @@
 <body>
     <a href="resources/helloWorld">Hello World</a><p/>
     <a href="editor.jsp">Share Editor</a><p/>
-    <a href="register.jsp">Register</a><p/>
+    <a href="/register">Register</a><p/>
     <a href="signIn.jsp">Sign In</a><p/>
     <a href="agentStatus.jsp">Agent Status</a><p/>
 </body>

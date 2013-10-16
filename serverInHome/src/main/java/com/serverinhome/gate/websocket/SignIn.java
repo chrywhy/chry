@@ -1,4 +1,4 @@
-package com.serverinhome.gateServer;
+package com.serverinhome.gate.websocket;
 
 import java.io.IOException;
 import java.util.Collections;
