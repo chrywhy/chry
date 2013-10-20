@@ -1,7 +1,9 @@
 package com.serverinhome.gate.websocket;
 
+import com.servinhome.gate.ActiveClients;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,18 +17,16 @@ import javax.websocket.server.ServerEndpoint;
 @ServerEndpoint("/agentConnector")
 public class AgentConnector {
 
-    private static Set<Session> peers = Collections.newSetFromMap(new ConcurrentHashMap<Session, Boolean>());
-
     @OnOpen
     public void onOpen(Session client) throws IOException, EncodeException {
         System.out.print("################# open -");
-        peers.add(client);
+        ActiveClients.add(client);
         client.getBasicRemote().sendText("Hi, websocket is open");
     }
 
     @OnClose
-    public void onClose(Session session) {
-        peers.remove(session);
+    public void onClose(Session client) {
+        ActiveClients.remove(client);
     }
 
     @OnMessage
