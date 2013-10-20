@@ -16,13 +16,12 @@ import javax.websocket.server.ServerEndpoint;
 public class AgentConnector {
 
     private static Set<Session> peers = Collections.newSetFromMap(new ConcurrentHashMap<Session, Boolean>());
-    private static String _text = "";
 
     @OnOpen
     public void onOpen(Session client) throws IOException, EncodeException {
-        System.out.print("################# open -" + _text);
+        System.out.print("################# open -");
         peers.add(client);
-        client.getBasicRemote().sendText(_text);
+        client.getBasicRemote().sendText("Hi, websocket is open");
     }
 
     @OnClose
@@ -32,12 +31,7 @@ public class AgentConnector {
 
     @OnMessage
     public void shapeCreated(String message, Session client) throws IOException, EncodeException {
-        for (Session otherSession : peers) {
-            if (!otherSession.equals(client)) {
-                _text = message;
-//                System.out.print("################# message = " + message);
-                otherSession.getBasicRemote().sendText(message);
-            }
-        }
+            System.out.print("################# message = " + message);
+            client.getBasicRemote().sendText("Hi, I'm gate server");
     }
 }
