@@ -5,13 +5,9 @@ package com.serverinhome.home;
  *
  */
 import java.net.URI;
-import java.util.concurrent.CountDownLatch;
-import org.glassfish.tyrus.client.ClientManager;
-        
+
 public class HomeAgent 
 {
-    private static CountDownLatch latch;
-    
     public static void main(String[] args) throws Exception {
 
         final AgentClientEndpoint clientEndPoint = new AgentClientEndpoint(new URI("ws://localhost:8080/edit/"));

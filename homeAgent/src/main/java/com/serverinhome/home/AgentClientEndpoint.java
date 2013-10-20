@@ -21,7 +21,7 @@ import org.glassfish.tyrus.client.ClientManager;
 /**
  * ChatServer Client
  * 
- * @author Jiji_Sasidharan
+ * @author Huiyu Wang
  */
 @ClientEndpoint
 public class AgentClientEndpoint {
@@ -39,7 +39,7 @@ public class AgentClientEndpoint {
 */
             ClientManager client = ClientManager.createClient();
             try {
-                client.connectToServer(this, new URI("ws://localhost:8080/edit"));
+                client.connectToServer(this, new URI("ws://localhost:8080/agentConnector"));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -104,7 +104,7 @@ public class AgentClientEndpoint {
     /**
      * Message handler.
      * 
-     * @author Jiji_Sasidharan
+     * @author Huiyu Wang
      */
     public static interface MessageHandler {
         public void handleMessage(String message);
