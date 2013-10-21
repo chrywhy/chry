@@ -1,6 +1,6 @@
 package com.serverinhome.gate.websocket;
 
-import com.servinhome.gate.ActiveClients;
+import com.serverinhome.gate.ActiveClients;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
