@@ -2,10 +2,6 @@ package com.serverinhome.gate.websocket;
 
 import com.serverinhome.gate.ActiveClients;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
@@ -30,7 +26,7 @@ public class AgentConnector {
     }
 
     @OnMessage
-    public void shapeCreated(String message, Session client) throws IOException, EncodeException {
+    public void onMessage(String message, Session client) throws IOException, EncodeException {
             System.out.print("################# message = " + message);
             client.getBasicRemote().sendText("Hi, I'm gate server");
     }

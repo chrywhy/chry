@@ -21,21 +21,21 @@ public class ActiveClients {
     
     public static void add(Session client) {
         Map<String, Object> userProp = client.getUserProperties();
-        String name = userProp.get("name").toString();
-        _clients.put(name, client);
+        String user = userProp.get("user").toString();
+        _clients.put(user, client);
     }
     
-    public static void get(String name) {
-        _clients.get(name);
+    public static Session get(String user) {
+        return _clients.get(user);
     }
 
-    public static void remove(String name) {
-        _clients.get(name);
+    public static void remove(String user) {
+        _clients.get(user);
     }
 
     public static void remove(Session client) {
         Map<String, Object> userProp = client.getUserProperties();
-        String name = userProp.get("name").toString();
-        _clients.get(name);
+        String user = userProp.get("user").toString();
+        _clients.get(user);
     }
 }

@@ -9,6 +9,7 @@ package com.serverinhome.home;
  * @author chry
  */
 import java.net.URI;
+import java.util.Map;
  
 import javax.websocket.ClientEndpoint;
 import javax.websocket.CloseReason;
@@ -39,6 +40,8 @@ public class AgentClientEndpoint {
 */
             ClientManager client = ClientManager.createClient();
             try {
+                Map<String, Object> prop = client.getProperties();
+                prop.put("user", "chry");
                 client.connectToServer(this, new URI("ws://localhost:8080/agentConnector"));
             } catch (Exception e) {
                 throw new RuntimeException(e);

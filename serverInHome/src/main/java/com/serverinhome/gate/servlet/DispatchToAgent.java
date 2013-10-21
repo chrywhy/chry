@@ -54,10 +54,10 @@ public class DispatchToAgent extends BaseProxyServlet {
         try {
             if (isPost) {
                 HttpPostStream hps = _getHttpPostStream(request);
-                respStream = hsClient.post(url, hps);
+                respStream = hsClient.post(userName, url, hps);
             }
             else {
-                respStream = hsClient.get(url);
+                respStream = hsClient.get(userName, url);
             }
             LogMsg.debug("Forward request OK", "URL=" + url);
         }
