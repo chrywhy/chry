@@ -1,6 +1,7 @@
 package com.serverinhome.gate.websocket;
 
-import com.serverinhome.gate.ActiveClients;
+import com.serverinhome.gate.ActiveCsrs;
+import com.serverinhome.gate.Csr;
 import java.io.IOException;
 
 import javax.websocket.EncodeException;
@@ -14,15 +15,15 @@ import javax.websocket.server.ServerEndpoint;
 public class AgentConnector {
 
     @OnOpen
-    public void onOpen(Session client) throws IOException, EncodeException {
+    public void onOpen(Session session) throws IOException, EncodeException {
         System.out.print("################# open -");
-        ActiveClients.add(client);
-        client.getBasicRemote().sendText("Hi, websocket is open");
+        ActiveCsrs.add(new Csr(session));
+        session.getBasicRemote().sendText("Hi, websocket is open");
     }
 
     @OnClose
-    public void onClose(Session client) {
-        ActiveClients.remove(client);
+    public void onClose(Session session) {
+        ActiveCsrs.remove(session);
     }
 
     @OnMessage

@@ -10,7 +10,7 @@
 package com.serverinhome.gate.servlet;
 
 import com.serverinhome.common.logger.LogMsg;
-import com.serverinhome.proxy.client.HomeServerClient;
+import com.serverinhome.proxy.client.AgentClient;
 import com.serverinhome.util.http.HttpPostStream;
 import com.serverinhome.util.http.HttpResponseStream;
 import com.serverinhome.util.http.HttpService;
@@ -41,9 +41,9 @@ public class DispatchToAgent extends BaseProxyServlet {
             throw new ServletException("Invlid Forward Reuest");
         }
 
-        HomeServerClient hsClient;
+        AgentClient hsClient;
         try {
-            hsClient = new HomeServerClient();
+            hsClient = new AgentClient();
         }
         catch (Exception e) {
             LogMsg.error("Csproxy intrnal error", "URL=" + url, e);
