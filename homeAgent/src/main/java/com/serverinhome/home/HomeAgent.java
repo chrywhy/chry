@@ -10,7 +10,7 @@ public class HomeAgent
 {
     public static void main(String[] args) throws Exception {
 
-        final AgentClientEndpoint clientEndPoint = new AgentClientEndpoint(new URI("ws://localhost:8080/edit/"));
+        final AgentClientEndpoint clientEndPoint = new AgentClientEndpoint(new URI("ws://localhost:8080/"));
         clientEndPoint.addMessageHandler(new AgentClientEndpoint.MessageHandler() {
                     public void handleMessage(String message) {
                             System.out.println(message);
@@ -18,7 +18,7 @@ public class HomeAgent
                 });
  
         while (true) {
-            clientEndPoint.sendMessage("Hi, I'm home agent");
+            clientEndPoint.sendMessage("Hi, I'm home agent for user: chry");
             Thread.sleep(30000);
         }
 

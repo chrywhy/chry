@@ -5,20 +5,22 @@ import com.serverinhome.gate.Csr;
 import java.io.IOException;
 
 import javax.websocket.EncodeException;
+import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
+import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-@ServerEndpoint("/agentConnector")
+@ServerEndpoint("/agentConnector/{user}")
 public class AgentConnector {
 
     @OnOpen
-    public void onOpen(Session session) throws IOException, EncodeException {
+    public void onOpen(Session session, EndpointConfig c, @PathParam("user") String user) throws IOException, EncodeException {
         System.out.print("################# open -");
         ActiveCsrs.add(new Csr(session));
-        session.getBasicRemote().sendText("Hi, websocket is open");
+        session.getBasicRemote().sendText("Hi, websocket is open for user: ");
     }
 
     @OnClose
@@ -27,8 +29,8 @@ public class AgentConnector {
     }
 
     @OnMessage
-    public void onMessage(String message, Session client) throws IOException, EncodeException {
+    public void onMessage(String message, Session client, @PathParam("user") String user) throws IOException, EncodeException {
             System.out.print("################# message = " + message);
-            client.getBasicRemote().sendText("Hi, I'm gate server");
+            client.getBasicRemote().sendText("Hi " + user + ", I'm gate server");
     }
 }

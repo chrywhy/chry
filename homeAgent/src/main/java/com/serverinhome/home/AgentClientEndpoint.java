@@ -42,7 +42,7 @@ public class AgentClientEndpoint {
             try {
                 Map<String, Object> prop = client.getProperties();
                 prop.put("user", "chry");
-                client.connectToServer(this, new URI("ws://localhost:8080/agentConnector"));
+                client.connectToServer(this, new URI("ws://localhost:8080/agentConnector/chry"));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
