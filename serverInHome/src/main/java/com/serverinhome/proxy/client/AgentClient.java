@@ -23,12 +23,14 @@ public class AgentClient {
 
     public HttpResponseStream get(String userName, String url) {
         Csr csr = ActiveCsrs.get(userName);
-        Session session = csr.getSession();
-        try {
-            session.getBasicRemote().sendText(url);
-            //TODO wait result
-        } catch (IOException e) {
-            System.out.println("Failed to get response rfom client");
+        if (csr != null) {
+            Session session = csr.getSession();
+            try {
+                session.getBasicRemote().sendText(url);
+                HttpResponseStream hrs = csr.getResponse();
+            } catch (IOException e) {
+                System.out.println("Failed to get response rfom client");
+            }
         }
         return null;
     }

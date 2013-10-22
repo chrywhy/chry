@@ -9,8 +9,8 @@
     ShareEditor = Backbone.View.extend({
         el: $("#editor"),
         events: {
-            "input #editArea": "onTextInput",
-            "propertyChange #editArea": "onTextInput"
+//            "input #editArea": "onTextInput",
+//            "propertyChange #editArea": "onTextInput"
         },
 
         initialize: function () {
@@ -18,12 +18,8 @@
         },
                 
         onTextChanged : function() {
-            eleEditArea.val(this.model.getText());
-        },
-
-        onTextInput : function() {
-            var text = eleEditArea.val();
-            this.model.updateText(text);
+            var oldText = eleEditArea.val();
+            eleEditArea.val(oldText + "\n" + this.model.getText());
         }
     });
         
@@ -37,7 +33,7 @@
         getUri: function() {
             var rootUrl =  "ws://" + (document.location.hostname == "" ? "localhost" : document.location.hostname) + ":" +
                     (document.location.port == "" ? "8080" : document.location.port);
-            return rootUrl + "/edit";
+            return rootUrl + "/agentConnector";
         },
 
         initialize: function () {
@@ -55,11 +51,6 @@
                 
         getText: function() {
             return this.get("text");
-        },
-                
-        updateText : function(text) {
-            this.text = text;
-            this.websocket.send(text);
         }
     });
 })();

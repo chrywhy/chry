@@ -8,6 +8,6 @@
 </head>
 <body>
     <a href="resources/helloWorld">Hello World</a><p/>
-    <a href="editor.jsp">Share Editor</a><p/>
+    <a href="agentConnector.jsp">Agent Connector</a><p/>
 </body>
 </html>

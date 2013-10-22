@@ -10,6 +10,7 @@
 
 package com.serverinhome.util.http;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,7 +24,17 @@ public class HttpResponseStream {
     private final String _contentEncoding;
     private final String _contentType;
     private final int _contentLength;
-    private final HttpURLConnection _urlConn;
+    private final int _statucCode;
+
+    public HttpResponseStream(String message) throws HttpException, IOException {
+        _statucCode = 200;
+        _inputStream = new ByteArrayInputStream(message.getBytes());;
+        _errorStream = null;
+        _contentEncoding = "";
+        _contentType = "text/plain";
+        _contentLength = message.length();
+//        Logger.info2("#######2####### encode: " + _contentEncoding + "  ##  contentTyep: " + _contentType);
+    }
 
     public HttpResponseStream(HttpURLConnection urlConn) throws HttpException, IOException {
         if (urlConn.getResponseCode() != HttpURLConnection.HTTP_OK) {
@@ -34,7 +45,7 @@ public class HttpResponseStream {
         _contentEncoding = urlConn.getContentEncoding();
         _contentType = urlConn.getContentType();
         _contentLength = urlConn.getContentLength();
-        _urlConn = urlConn;
+        _statucCode = urlConn.getResponseCode();
 //        Logger.info2("#######2####### encode: " + _contentEncoding + "  ##  contentTyep: " + _contentType);
     }
 
@@ -50,17 +61,8 @@ public class HttpResponseStream {
         return _contentLength;
     }
 
-    public HttpURLConnection getHttpURLConnection() {
-        return _urlConn;
-    }
-
     public int getResponseCode() {
-        try {
-            return _urlConn.getResponseCode();
-        }
-        catch (Throwable e) {
-            return 0;
-        }
+        return _statucCode;
     }
 
     public boolean isGzip() {

@@ -32,6 +32,7 @@ public class AgentConnector {
     public void onMessage(String message, Session session) throws IOException, EncodeException {
         System.out.print("################# message = " + message);
         Csr csr = ActiveCsrs.get(session);
+        csr.setResponse(message);
         session.getBasicRemote().sendText("Hi " + csr.getUserName() + ", I'm gate server");
     }
 }
