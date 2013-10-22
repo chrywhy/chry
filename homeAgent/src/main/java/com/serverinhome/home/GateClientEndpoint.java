@@ -25,11 +25,11 @@ import org.glassfish.tyrus.client.ClientManager;
  * @author Huiyu Wang
  */
 @ClientEndpoint
-public class AgentClientEndpoint {
+public class GateClientEndpoint {
     Session userSession = null;
     private MessageHandler messageHandler;
  
-    public AgentClientEndpoint(URI endpointURI) {
+    public GateClientEndpoint(URI endpointURI) {
 /*        try {
             WebSocketContainer container = ContainerProvider
                     .getWebSocketContainer();
@@ -42,7 +42,7 @@ public class AgentClientEndpoint {
             try {
                 Map<String, Object> prop = client.getProperties();
                 prop.put("user", "chry");
-                client.connectToServer(this, new URI("ws://localhost:8080/agentConnector/chry"));
+                client.connectToServer(this, endpointURI);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

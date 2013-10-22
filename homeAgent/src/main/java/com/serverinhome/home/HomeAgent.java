@@ -10,15 +10,14 @@ public class HomeAgent
 {
     public static void main(String[] args) throws Exception {
 
-        final AgentClientEndpoint clientEndPoint = new AgentClientEndpoint(new URI("ws://localhost:8080/"));
-        clientEndPoint.addMessageHandler(new AgentClientEndpoint.MessageHandler() {
+        final GateClientEndpoint gateClient = new GateClientEndpoint(new URI("ws://localhost:8080/agentConnector/" + args[0]));
+        gateClient.addMessageHandler(new GateClientEndpoint.MessageHandler() {
                     public void handleMessage(String message) {
                             System.out.println(message);
                     }
                 });
- 
         while (true) {
-            clientEndPoint.sendMessage("Hi, I'm home agent for user: chry");
+            gateClient.sendMessage("Hi, I'm home agent for user: " + args[0]);
             Thread.sleep(30000);
         }
 

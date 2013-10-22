@@ -18,9 +18,9 @@ public class AgentConnector {
 
     @OnOpen
     public void onOpen(Session session, EndpointConfig c, @PathParam("user") String user) throws IOException, EncodeException {
-        System.out.print("################# open -");
-        ActiveCsrs.add(new Csr(session));
-        session.getBasicRemote().sendText("Hi, websocket is open for user: ");
+        System.out.print("################# open websocket for user: " + user);
+        ActiveCsrs.add(user, new Csr(user, session));
+        session.getBasicRemote().sendText("Hi, websocket is open for user: " + user);
     }
 
     @OnClose
@@ -29,8 +29,9 @@ public class AgentConnector {
     }
 
     @OnMessage
-    public void onMessage(String message, Session client, @PathParam("user") String user) throws IOException, EncodeException {
-            System.out.print("################# message = " + message);
-            client.getBasicRemote().sendText("Hi " + user + ", I'm gate server");
+    public void onMessage(String message, Session session) throws IOException, EncodeException {
+        System.out.print("################# message = " + message);
+        Csr csr = ActiveCsrs.get(session);
+        session.getBasicRemote().sendText("Hi " + csr.getUserName() + ", I'm gate server");
     }
 }

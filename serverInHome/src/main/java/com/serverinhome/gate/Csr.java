@@ -12,11 +12,17 @@ import javax.websocket.Session;
  * @author chry
  */
 public class Csr {
+    private final String _user;
     private final Session _session;
     private final CountDownLatch _doneLatch = new CountDownLatch(1);
     
-    public Csr(Session session) {
+    public Csr(String user, Session session) {
+        _user = user;
         _session = session;
+    }
+    
+    public String getUserName() {
+        return _user;
     }
     
     public Session getSession() {
