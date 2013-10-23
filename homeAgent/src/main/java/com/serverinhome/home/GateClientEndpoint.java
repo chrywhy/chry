@@ -28,8 +28,9 @@ import org.glassfish.tyrus.client.ClientManager;
 public class GateClientEndpoint {
     Session userSession = null;
     private MessageHandler messageHandler;
+    private final String _userName;
  
-    public GateClientEndpoint(URI endpointURI) {
+    public GateClientEndpoint(String userName) {
 /*        try {
             WebSocketContainer container = ContainerProvider
                     .getWebSocketContainer();
@@ -38,14 +39,16 @@ public class GateClientEndpoint {
             throw new RuntimeException(e);
         }
 */
+        _userName = userName;
+        try {
+            URI endpointURI = new URI("ws://localhost:8080/agentConnector/" + userName);
             ClientManager client = ClientManager.createClient();
-            try {
-                Map<String, Object> prop = client.getProperties();
-                prop.put("user", "chry");
-                client.connectToServer(this, endpointURI);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            Map<String, Object> prop = client.getProperties();
+            prop.put("user", "chry");
+            client.connectToServer(this, endpointURI);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
  
     /**
@@ -81,8 +84,11 @@ public class GateClientEndpoint {
      */
     @OnMessage
     public void onMessage(String message) {
-        if (this.messageHandler != null)
+        if (this.messageHandler != null) {
             this.messageHandler.handleMessage(message);
+        }
+        System.out.println("Message from gate server:" + message);
+        sendMessage("Hello, I'm home agent:" + _userName);
     }
  
     /**
