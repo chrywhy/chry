@@ -8,6 +8,8 @@ package com.serverinhome.home;
  *
  * @author chry
  */
+import com.serverinhome.util.http.HttpClient;
+import com.serverinhome.util.http.HttpResponseStream;
 import java.net.URI;
 import java.util.Map;
  
@@ -88,7 +90,28 @@ public class GateClientEndpoint {
             this.messageHandler.handleMessage(message);
         }
         System.out.println("Message from gate server:" + message);
-        sendMessage("Hello, I'm home agent:" + _userName);
+        try {
+            HttpClient httpClient = new HttpClient();
+            int urlPos = message.indexOf("url=");
+            String url = "";
+            if (urlPos >=0) {
+                urlPos += 4;
+                int urlEnd = message.indexOf("&", urlPos);
+                if (urlEnd < 0) {
+                    url = message.substring(urlPos);
+                } else {
+                    url = message.substring(urlPos, urlEnd);
+                }
+                HttpResponseStream hrs = httpClient.get(url);
+                String rspMsg = hrs.decodeToString();
+                System.out.println(rspMsg);
+                sendMessage(rspMsg);
+            } else {
+                sendMessage("Hello, I'm home agent:" + _userName);
+            }
+        } catch (Exception e) {
+            sendMessage("Hello, I'm home agent:" + _userName);
+        }
     }
  
     /**

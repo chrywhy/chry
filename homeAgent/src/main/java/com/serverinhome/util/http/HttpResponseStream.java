@@ -31,7 +31,7 @@ public class HttpResponseStream {
         _inputStream = new ByteArrayInputStream(message.getBytes());;
         _errorStream = null;
         _contentEncoding = "";
-        _contentType = "text/html";
+        _contentType = "text/plain";
         _contentLength = message.length();
 //        Logger.info2("#######2####### encode: " + _contentEncoding + "  ##  contentTyep: " + _contentType);
     }
