@@ -34,6 +34,7 @@ public class Csr {
     public void setResponse(String message) {
         try {
             _hrs = new HttpResponseStream(message);
+            System.out.println("########I'm notify....");
             _doneLatch.countDown();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -42,7 +43,9 @@ public class Csr {
     
     public HttpResponseStream getResponse() {
         try {
+            System.out.println("########I'm waiting....");
             _doneLatch.await();
+            System.out.println("########I continue....");
             _doneLatch = new CountDownLatch(1);
             return _hrs;
         } catch (Exception e) {

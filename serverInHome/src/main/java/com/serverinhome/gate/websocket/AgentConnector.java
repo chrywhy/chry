@@ -33,6 +33,6 @@ public class AgentConnector {
         System.out.print("################# message = " + message);
         Csr csr = ActiveCsrs.get(session);
         csr.setResponse(message);
-        session.getBasicRemote().sendText("Hi " + csr.getUserName() + ", I'm gate server");
+//        session.getBasicRemote().sendText("Hi " + csr.getUserName() + ", I'm gate server");
     }
 }
