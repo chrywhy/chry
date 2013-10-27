@@ -6,6 +6,7 @@ package com.serverinhome.proxy.client;
 
 import com.serverinhome.gate.ActiveCsrs;
 import com.serverinhome.gate.Csr;
+import com.serverinhome.gate.websocket.AgentConnector;
 import com.serverinhome.util.http.HttpPostStream;
 import com.serverinhome.util.http.HttpResponseStream;
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class AgentClient {
         if (csr != null) {
             Session session = csr.getSession();
             try {
-                session.getBasicRemote().sendText(url);
+                session.getBasicRemote().sendText(AgentConnector.createDispatchMessage(userName, url));
                 hrs = csr.getResponse();
             } catch (IOException e) {
                 System.out.println("Failed to get response rfom client");

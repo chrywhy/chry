@@ -1,26 +1,36 @@
-package com.serverinhome.home;
+package com.serverinhome.agent;
 
 /**
  * HomeAgent
  *
  */
-import java.net.URI;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HomeAgent implements Runnable {
-    private GateClientEndpoint _gateClient;
+    private GateClient _gateClient;
+    String _userName;
     public HomeAgent(String userName) {
         try {
-            _gateClient = new GateClientEndpoint(userName);
+            _userName =userName;
+            _gateClient = GateClient.create(userName);
+            _gateClient.trustAllHosts();
         } catch (Exception e)  {
             throw new RuntimeException(e);
         }
     }
-    
+        
     @Override
     public void run() {
-        System.out.println("HomeAgent started");
+        try {
+            System.out.println("HomeAgent started");
+//            _gateClient.connectBlocking();
+            _gateClient.run();
+        } catch (Exception ex) {
+            Logger.getLogger(HomeAgent.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public static void main(String[] args) throws Exception {
