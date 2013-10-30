@@ -3,6 +3,8 @@ package com.serverinhome.gate.websocket;
 import com.serverinhome.gate.ActiveCsrs;
 import com.serverinhome.gate.Csr;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.websocket.EncodeException;
 import javax.websocket.EndpointConfig;
@@ -32,10 +34,22 @@ public class AgentConnector {
 
     @OnMessage
     public void onMessage(String message, Session session) throws IOException, EncodeException {
-        System.out.print("################# message = " + message);
-        Csr csr = ActiveCsrs.get(session);
-        csr.setResponse(message);
+        try {
+            JSONObject jMsg = new JSONObject(message);
+            JSONObject jHead = jMsg.getJSONObject("head");
+            JSONObject jBody = jMsg.getJSONObject("body");
+            String msgType = jHead.getString("msgType");
+            if ("defaultRsp".equalsIgnoreCase(msgType)) {
+                System.out.println("######## " + jBody.getString("message"));
+            } else {
+                System.out.println("######## " + jHead.toString());
+            }
+            Csr csr = ActiveCsrs.get(session);
+            csr.setResponse(jHead, jBody);
 //        session.getBasicRemote().sendText("Hi " + csr.getUserName() + ", I'm gate server");
+        } catch (JSONException ex) {
+            throw new RuntimeException(ex);
+        }
     }
     
     public static String createOpenMessage(String user) {

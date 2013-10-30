@@ -11,11 +11,14 @@ package com.serverinhome.agent;
 import com.serverinhome.util.http.HttpClient;
 import com.serverinhome.util.http.HttpResponseStream;
 import com.serverinhome.util.http.websocket.WebsocketClient;
+import com.serverinhome.util.http.websocket.WebsocketStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.channels.NotYetConnectedException;
 
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -24,8 +27,19 @@ import org.json.JSONObject;
  * @author Huiyu Wang
  */
 public class GateClient extends WebsocketClient {
-
+    public enum RspType {
+        internal(0), http(1);        
+        private final int value;
+        RspType(int val) {
+            value = val;
+        }
+        public int getVal() {
+            return value;
+        }
+    }
+    
     private final String _userName;
+    private final WebsocketStream _ws;
 
     public static GateClient create(String userName) {
         try {
@@ -39,6 +53,7 @@ public class GateClient extends WebsocketClient {
     private GateClient(String userName, URI uri) {
         super(uri);
         _userName = userName;
+        _ws = new WebsocketStream(this);
     }
 
     @Override
@@ -69,15 +84,16 @@ public class GateClient extends WebsocketClient {
                     }
 //                    sendMessage("#############################");
                     HttpResponseStream hrs = httpClient.get(url);
-                    String rspMsg = hrs.decodeToString();
-                    System.out.println(rspMsg);
-                    sendMessage(rspMsg);
+                    sendHttpMessage(hrs);
+//                    String rspMsg = hrs.decodeToString();
+                    System.out.println("send response for url - " + url);
+//                    sendMessage(rspMsg);
                 } else {
-                    sendMessage("Hello, I'm home agent:" + _userName);
+                    sendDefMessage();
                 }
             }
         } catch (Exception e) {
-            sendMessage("Hello, I'm home agent:" + _userName);
+            sendDefMessage();
         }
     }
 
@@ -92,10 +108,51 @@ public class GateClient extends WebsocketClient {
         ex.printStackTrace();
     }
 
-    public void sendMessage(String message) {
+    private void sendMessage(String message) {
         send(message);
     }
 
+    public void sendHttpMessage(HttpResponseStream hrs) {
+        try {
+            _ws.write(RspType.http.getVal());
+            _ws.write(hrs.getResponseCode());
+            byte[] encoding = hrs.getContentEncoding().getBytes();
+            _ws.write(encoding.length);
+            _ws.write(encoding);
+            byte[] contentType = hrs.getContentType().getBytes();
+            _ws.write(contentType.length);
+            _ws.write(contentType);
+            _ws.write(hrs.getContentLength());
+            hrs.
+            jBody.put("message", hrs.getContentString());
+            jMsg.put("head", jHead);
+            jMsg.put("body", jBody);
+            send(jMsg.toString());
+        } catch (JSONException | IOException | NotYetConnectedException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    
+    public void sendDefMessage() {
+        try {
+            JSONObject jMsg = new JSONObject();
+            JSONObject jHead = new JSONObject();
+            JSONObject jBody = new JSONObject();
+            jHead.put("msgType", "default");
+            jHead.put("statusCode", 200);
+            jHead.put("encodeType", "");
+            jHead.put("contentType", "text/plain");
+            String message = "Hello, I'm home agent:" + _userName;
+            jHead.put("contentLength", message.length());
+            jBody.put("message", message);
+            jMsg.put("head", jHead);
+            jMsg.put("body", jBody);
+            send(jMsg.toString());
+        } catch (JSONException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    
     public void sendResult(HttpResponseStream hrs) throws IOException {
         String rspMsg = hrs.decodeToString();
         System.out.println(rspMsg);

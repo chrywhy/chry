@@ -15,7 +15,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class HttpResponseStream {
 
@@ -26,6 +30,21 @@ public class HttpResponseStream {
     private final int _contentLength;
     private final int _statucCode;
 
+    public HttpResponseStream(JSONObject jHead, JSONObject jBody) {
+        try {
+            _statucCode = jHead.getInt("statusCode");
+            _contentEncoding = jHead.getString("encodeType");
+            _contentType = jHead.getString("contentType");
+            String message = jBody.getString("message");
+            _inputStream = new ByteArrayInputStream(message.getBytes());;
+            _errorStream = null;
+            _contentLength = message.length();
+    //        Logger.info2("#######2####### encode: " + _contentEncoding + "  ##  contentTyep: " + _contentType);
+        } catch (JSONException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    
     public HttpResponseStream(String message) throws HttpException, IOException {
         _statucCode = 200;
         _inputStream = new ByteArrayInputStream(message.getBytes());;

@@ -77,6 +77,10 @@ public class HttpResponseStream {
         return is;
     }
 
+    public String getContentString() throws IOException {
+        return StreamUtil.inputStreamToString(_inputStream);
+    }
+    
     public String decodeToString() throws IOException {
         InputStream is = _getDecodedStream();
         return StreamUtil.inputStreamToString(is);

@@ -7,6 +7,7 @@ package com.serverinhome.gate;
 import com.serverinhome.util.http.HttpResponseStream;
 import java.util.concurrent.CountDownLatch;
 import javax.websocket.Session;
+import org.json.JSONObject;
 
 /**
  *
@@ -31,9 +32,9 @@ public class Csr {
         return _session;
     }
     
-    public void setResponse(String message) {
+    public void setResponse(JSONObject jHead, JSONObject jBody) {
         try {
-            _hrs = new HttpResponseStream(message);
+            _hrs = new HttpResponseStream(jHead, jBody);
             System.out.println("########I'm notify....");
             _doneLatch.countDown();
         } catch (Exception e) {
