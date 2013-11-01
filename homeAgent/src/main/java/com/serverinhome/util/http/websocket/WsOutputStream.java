@@ -11,13 +11,13 @@ import java.io.OutputStream;
  *
  * @author chry
  */
-public class WebsocketStream extends OutputStream {
+public class WsOutputStream extends OutputStream {
     private static int BUF_SIZE = 1024;
     private byte[] _buffer = new byte[BUF_SIZE];
     private int _bufSize = 0;
     private final WebsocketClient _ws;
     
-    public WebsocketStream(WebsocketClient ws) {
+    public WsOutputStream(WebsocketClient ws) {
         _ws = ws;
     }
     

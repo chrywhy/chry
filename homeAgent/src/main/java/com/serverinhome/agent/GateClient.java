@@ -11,7 +11,7 @@ package com.serverinhome.agent;
 import com.serverinhome.util.http.HttpClient;
 import com.serverinhome.util.http.HttpResponseStream;
 import com.serverinhome.util.http.websocket.WebsocketClient;
-import com.serverinhome.util.http.websocket.WebsocketStream;
+import com.serverinhome.util.http.websocket.WsOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -39,7 +39,7 @@ public class GateClient extends WebsocketClient {
     }
     
     private final String _userName;
-    private final WebsocketStream _ws;
+    private final WsOutputStream _ws;
 
     public static GateClient create(String userName) {
         try {
@@ -53,7 +53,7 @@ public class GateClient extends WebsocketClient {
     private GateClient(String userName, URI uri) {
         super(uri);
         _userName = userName;
-        _ws = new WebsocketStream(this);
+        _ws = new WsOutputStream(this);
     }
 
     @Override
@@ -114,21 +114,18 @@ public class GateClient extends WebsocketClient {
 
     public void sendHttpMessage(HttpResponseStream hrs) {
         try {
-            _ws.write(RspType.http.getVal());
-            _ws.write(hrs.getResponseCode());
-            byte[] encoding = hrs.getContentEncoding().getBytes();
-            _ws.write(encoding.length);
-            _ws.write(encoding);
+            _ws.write(1);   //version
+            _ws.write(RspType.http.getVal());   //Response type
+            _ws.write(hrs.getResponseCode());   //Http Status Code
+            byte[] encoding = hrs.getContentEncoding().getBytes();  
+            _ws.write(encoding.length); //encoding length
+            _ws.write(encoding);    //enncoding
             byte[] contentType = hrs.getContentType().getBytes();
-            _ws.write(contentType.length);
-            _ws.write(contentType);
-            _ws.write(hrs.getContentLength());
-            hrs.
-            jBody.put("message", hrs.getContentString());
-            jMsg.put("head", jHead);
-            jMsg.put("body", jBody);
-            send(jMsg.toString());
-        } catch (JSONException | IOException | NotYetConnectedException ex) {
+            _ws.write(contentType.length);  //content type length
+            _ws.write(contentType);         //content type
+            _ws.write(hrs.getContentLength());  //content length
+            hrs.writeToStream(_ws); //content
+        } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
     }
