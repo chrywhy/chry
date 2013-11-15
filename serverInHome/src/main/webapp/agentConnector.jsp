@@ -10,7 +10,7 @@
 <h1 style="text-align:center">Agent Connector</h1>
 <form action="/dispatch">
   user: <input type="text" name="user"><br>
-  message: <input type="text" name="message"><br>
+  url: <input type="text" name="url"><br>
   <input type="submit" value="Submit">
 </form>
 <div id="editor">

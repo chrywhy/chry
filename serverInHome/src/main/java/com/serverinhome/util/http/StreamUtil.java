@@ -40,6 +40,10 @@ public class StreamUtil {
         }
     }
 
+    public static long inputStreamToOutputStream(InputStream is, OutputStream os) throws IOException {
+        return inputStreamToOutputStream(is, os, null);
+    }
+    
     public static long inputStreamToOutputStream(InputStream is, OutputStream os, ProgressListener listener) throws IOException {
         try {
             if (is == null) {

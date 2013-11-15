@@ -15,21 +15,45 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 
 public class HttpResponseStream {
 
     private final InputStream _inputStream;
-    private final InputStream _errorStream;
     private final String _contentEncoding;
     private final String _contentType;
-    private final int _contentLength;
+    private final long _contentLength;
     private final int _statucCode;
+    private Header[] _headers;
 
+    public HttpResponseStream(HttpResponse rsp) throws HttpException, IOException {
+        HttpEntity entity = rsp.getEntity();
+        Header header = entity.getContentEncoding();
+        _contentEncoding = header == null ? "" : header.getValue();
+        header = entity.getContentType();
+        _contentType = header == null ? "" : header.getValue();
+        _contentLength = entity.getContentLength();
+        _statucCode = rsp.getStatusLine().getStatusCode();
+        _inputStream = entity.getContent();
+        _headers = rsp.getAllHeaders();
+    }
+
+    public InputStream getInputStream() {
+        return _inputStream;
+    }
+    
+    public Header[] getHeaders() {
+        return _headers;
+    }
+    
     public HttpResponseStream(String message) throws HttpException, IOException {
         _statucCode = 200;
         _inputStream = new ByteArrayInputStream(message.getBytes());;
-        _errorStream = null;
         _contentEncoding = "";
         _contentType = "text/plain";
         _contentLength = message.length();
@@ -41,7 +65,6 @@ public class HttpResponseStream {
             throw new HttpException(urlConn.getResponseCode());
         }
         _inputStream = urlConn.getInputStream();
-        _errorStream = urlConn.getErrorStream();
         _contentEncoding = urlConn.getContentEncoding();
         _contentType = urlConn.getContentType();
         _contentLength = urlConn.getContentLength();
@@ -57,7 +80,7 @@ public class HttpResponseStream {
         return _contentType;
     }
 
-    public int getContentLength() {
+    public long getContentLength() {
         return _contentLength;
     }
 
@@ -103,7 +126,7 @@ public class HttpResponseStream {
         return StreamUtil.inputStreamToOutputStream(_inputStream, os, listener);
     }
 
-    public String errorToString() throws IOException {
-        return StreamUtil.inputStreamToString(_errorStream);
+    public int writeToBuffer(byte[] buf, int offset) throws IOException {
+        return StreamUtil.inputStreamToBuffer(_inputStream, buf, offset);
     }
 }

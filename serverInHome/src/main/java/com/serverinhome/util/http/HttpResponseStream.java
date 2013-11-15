@@ -10,13 +10,13 @@
 
 package com.serverinhome.util.http;
 
+import com.serverinhome.gate.websocket.response.AccessResponseInputStream;
+import com.serverinhome.gate.websocket.response.HttpResponseHead;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,8 +27,17 @@ public class HttpResponseStream {
     private final InputStream _errorStream;
     private final String _contentEncoding;
     private final String _contentType;
-    private final int _contentLength;
+    private final long _contentLength;
     private final int _statucCode;
+
+    public HttpResponseStream(HttpResponseHead rsp, AccessResponseInputStream is) {
+        _statucCode = rsp.statusCode;
+        _contentEncoding = rsp.encodeType;
+        _contentType = rsp.contentType;
+        _contentLength = rsp.contentLength;
+        _inputStream = is;
+        _errorStream = null;
+    }
 
     public HttpResponseStream(JSONObject jHead, JSONObject jBody) {
         try {
@@ -76,7 +85,7 @@ public class HttpResponseStream {
         return _contentType;
     }
 
-    public int getContentLength() {
+    public long getContentLength() {
         return _contentLength;
     }
 

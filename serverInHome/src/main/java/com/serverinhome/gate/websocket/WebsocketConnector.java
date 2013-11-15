@@ -1,10 +1,10 @@
 package com.serverinhome.gate.websocket;
 
+import com.serverinhome.gate.websocket.response.AccessResponse;
 import com.serverinhome.gate.ActiveCsrs;
 import com.serverinhome.gate.Csr;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.nio.ByteBuffer;
 
 import javax.websocket.EncodeException;
 import javax.websocket.EndpointConfig;
@@ -17,8 +17,8 @@ import javax.websocket.server.ServerEndpoint;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@ServerEndpoint("/agentConnector/{user}")
-public class AgentConnector {
+@ServerEndpoint("/websocketConnector/{user}")
+public class WebsocketConnector {
 
     @OnOpen
     public void onOpen(Session session, EndpointConfig c, @PathParam("user") String user) throws IOException, EncodeException {
@@ -33,6 +33,7 @@ public class AgentConnector {
     }
 
     @OnMessage
+/*
     public void onMessage(String message, Session session) throws IOException, EncodeException {
         try {
             JSONObject jMsg = new JSONObject(message);
@@ -45,13 +46,20 @@ public class AgentConnector {
                 System.out.println("######## " + jHead.toString());
             }
             Csr csr = ActiveCsrs.get(session);
-            csr.setResponse(jHead, jBody);
+//            csr.setResponse(jHead, jBody);
 //        session.getBasicRemote().sendText("Hi " + csr.getUserName() + ", I'm gate server");
         } catch (JSONException ex) {
             throw new RuntimeException(ex);
         }
     }
-    
+*/
+    public void onMessage(ByteBuffer msgBuf, Session session) throws IOException {
+        Csr csr = ActiveCsrs.get(session);
+        AccessResponse rsp = AccessResponse.CreateAccessResponse(msgBuf);
+        csr.addResponse(rsp);
+    }
+  
+
     public static String createOpenMessage(String user) {
         try {
             JSONObject jMsg = new JSONObject();

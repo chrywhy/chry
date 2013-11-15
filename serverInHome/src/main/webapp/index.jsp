@@ -9,5 +9,7 @@
 <body>
     <a href="resources/helloWorld">Hello World</a><p/>
     <a href="agentConnector.jsp">Agent Connector</a><p/>
+    <a href="/dispatch?user=chry&url=http://www.baidu.com/">Agent Connector</a><p/>
+    <a href="/request?user=chry&requestId=1&url=http://www.baidu.com/">Agent Connector</a><p/>
 </body>
 </html>

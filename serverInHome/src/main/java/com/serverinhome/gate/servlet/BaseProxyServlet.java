@@ -10,8 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import javax.servlet.http.HttpServlet;
 
-public abstract class BaseProxyServlet extends BaseServlet {
+public abstract class BaseProxyServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected abstract HttpResponseStream _handleRequest(
@@ -30,7 +31,7 @@ public abstract class BaseProxyServlet extends BaseServlet {
         if (httpRespStream != null) {
             String contentType = httpRespStream.getContentType();
             response.setContentType(contentType);
-            response.setContentLength(httpRespStream.getContentLength());
+            response.setContentLength((int)httpRespStream.getContentLength());
             OutputStream servletRespStream = response.getOutputStream();
             httpRespStream.decodeToStream(servletRespStream);
         }

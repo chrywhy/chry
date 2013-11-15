@@ -4,10 +4,16 @@
  */
 package com.serverinhome.gate;
 
+import com.serverinhome.gate.websocket.response.AccessResponse;
+import static com.serverinhome.gate.websocket.response.AccessResponse.ResponseType.httpBody;
+import com.serverinhome.gate.websocket.response.AccessResponseInputStream;
+import com.serverinhome.gate.websocket.response.HttpResponseBody;
+import com.serverinhome.gate.websocket.response.HttpResponseHead;
 import com.serverinhome.util.http.HttpResponseStream;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingQueue;
 import javax.websocket.Session;
-import org.json.JSONObject;
 
 /**
  *
@@ -16,12 +22,13 @@ import org.json.JSONObject;
 public class Csr {
     private final String _user;
     private final Session _session;
-    private CountDownLatch _doneLatch = new CountDownLatch(1);
-    private HttpResponseStream _hrs;
-            
+    private final BlockingQueue<AccessResponse> msgQueue = new LinkedBlockingQueue<AccessResponse>();
+    private AccessResponseInputStream _arIs;
+    
     public Csr(String user, Session session) {
         _user = user;
         _session = session;
+        _arIs = new AccessResponseInputStream(msgQueue);
     }
     
     public String getUserName() {
@@ -32,25 +39,37 @@ public class Csr {
         return _session;
     }
     
-    public void setResponse(JSONObject jHead, JSONObject jBody) {
+   public void addResponse(AccessResponse rsp) {
+       try {
+            msgQueue.add(rsp);
+            System.out.println("################ add rsp new data buffer");
+       } catch (IllegalStateException e) {
+           System.err.println("msgQueue full - " + msgQueue.size());
+       }
+   }
+   
+    private AccessResponse getResponse() {
         try {
-            _hrs = new HttpResponseStream(jHead, jBody);
-            System.out.println("########I'm notify....");
-            _doneLatch.countDown();
+            return msgQueue.take();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
     
-    public HttpResponseStream getResponse() {
-        try {
-            System.out.println("########I'm waiting....");
-            _doneLatch.await();
-            System.out.println("########I continue....");
-            _doneLatch = new CountDownLatch(1);
-            return _hrs;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public HttpResponseStream getResponseStream() {
+        HttpResponseStream hrs = null;
+        HttpResponseHead head = null;
+        HttpResponseBody body = null;
+        while(true) {
+            AccessResponse ar = getResponse();
+            switch (ar.type) {
+                case httpHead:
+                    head = (HttpResponseHead) ar;
+                    return new HttpResponseStream(head, _arIs);
+                case pong:
+                case httpBody:
+                default:
+            }
+        } 
     }
 }

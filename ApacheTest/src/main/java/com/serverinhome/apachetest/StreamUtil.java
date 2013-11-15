@@ -8,7 +8,7 @@
  *  become simple to handle any type of get/post request or response
  *************************************************/
 
-package com.serverinhome.util.http;
+package com.serverinhome.apachetest;
 
 import java.io.*;
 
@@ -72,26 +72,5 @@ public class StreamUtil {
                 os.close();
             }
         }
-    }
-
-    public static int inputStreamToBuffer(InputStream is, byte[] buf, int offset) throws IOException {
-        if (is == null) {
-            return 0;
-        }
-        int len = 0;
-        try {
-            while (len >= 0 && offset < buf.length) {
-                len = is.read(buf, offset, buf.length - offset);
-                if (len < 0) {
-                    System.out.println("###########  end of response");
-                    is.close();
-                    break;
-                }
-                offset += len;
-            }
-        } catch(Exception e) {
-            is.close();
-        }
-        return offset;
     }
 }

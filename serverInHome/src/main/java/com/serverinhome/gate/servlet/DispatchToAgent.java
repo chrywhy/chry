@@ -30,8 +30,7 @@ public class DispatchToAgent extends BaseProxyServlet {
             HttpServletResponse response,
             boolean isPost)
             throws IOException, ServletException {
-        String userName = _getParameterString(request, "user").toLowerCase();
-
+        String userName = ServletUtil.getParameterString(request, "user").toLowerCase();
         String uri = request.getRequestURI();
         String query = request.getQueryString();
         String url = uri + "?" + query;

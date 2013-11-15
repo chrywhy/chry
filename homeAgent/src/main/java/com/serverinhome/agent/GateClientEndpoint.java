@@ -9,12 +9,12 @@ package com.serverinhome.agent;
  * @author chry
  */
 import com.serverinhome.util.http.HttpClient;
+import com.serverinhome.util.http.HttpClients;
 import com.serverinhome.util.http.HttpResponseStream;
 import java.net.URI;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
@@ -27,10 +27,7 @@ import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
-import org.glassfish.grizzly.ssl.SSLContextConfigurator;
-import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
 import org.glassfish.tyrus.client.ClientManager;
-import org.glassfish.tyrus.container.grizzly.GrizzlyEngine;
  
 /**
  * ChatServer Client
@@ -160,7 +157,6 @@ public class GateClientEndpoint {
         }
         System.out.println("Message from gate server:" + message);
         try {
-            HttpClient httpClient = new HttpClient();
             int urlPos = message.indexOf("url=");
             String url = "";
             if (urlPos >=0) {
@@ -171,6 +167,7 @@ public class GateClientEndpoint {
                 } else {
                     url = message.substring(urlPos, urlEnd);
                 }
+                HttpClient httpClient = HttpClients.createApacheHttpInstance();
                 HttpResponseStream hrs = httpClient.get(url);
                 String rspMsg = hrs.decodeToString();
                 System.out.println(rspMsg);

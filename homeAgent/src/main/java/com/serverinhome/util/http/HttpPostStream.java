@@ -13,32 +13,62 @@ package com.serverinhome.util.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.GZIPOutputStream;
+import org.apache.http.Header;
 
 public class HttpPostStream {
-
-    protected final InputStream _inputStream;
-    protected final String _contentEncoding;
-    protected final String _contentType;
     protected final boolean _hasAlreadyEncoded;
+    protected final InputStream _inputStream;
+    protected final Map<String, String> _headers = new HashMap<>();
 
     public HttpPostStream(InputStream is, String contentEncoding, String contentType, boolean hasAlreadyEncoded) {
+        _headers.put("Content-Encoding", contentEncoding);
+        _headers.put("Content-Type", contentType);
         _inputStream = is;
-        _contentEncoding = contentEncoding;
-        _contentType = contentType;
         _hasAlreadyEncoded = hasAlreadyEncoded;
     }
-
+    
+    public HttpPostStream(HttpResponseStream hrs) {
+        _headers.put("userStatusCode", "" + hrs.getResponseCode());
+        for (Header h : hrs.getHeaders()) {
+            _headers.put("user" + h.getName(), h.getValue());
+        }
+        _headers.put("userContent-Length", "" + hrs.getContentLength());
+        _inputStream = hrs.getInputStream();
+        _hasAlreadyEncoded = true;
+    }
+    
+    public InputStream getInputStream() {
+        return _inputStream;
+    }
+    
+    public Map<String, String> getHeaders() {
+        return _headers;
+    }
+    
     public String getContentEncoding() {
-        return _contentEncoding;
+        return _headers.get("Content-Encoding");
     }
 
     public String getContentType() {
-        return _contentType;
+        return _headers.get("Content-Type");
     }
 
+    public long getContentLength() {
+        try {
+            String lenStr = _headers.get("Content-Length");
+            long len;
+            len = Integer.parseInt(lenStr);
+            return len;
+        } catch(Exception e) {
+            return -1;
+        }
+    }
+    
     private boolean _needGzip() {
-        return !_hasAlreadyEncoded && "gzip".equalsIgnoreCase(_contentEncoding);
+        return !_hasAlreadyEncoded && "gzip".equalsIgnoreCase(getContentEncoding());
     }
 
     public long encodeToStream(OutputStream outputStream) throws IOException {
@@ -51,5 +81,9 @@ public class HttpPostStream {
             os = new GZIPOutputStream(outputStream);
         }
         return StreamUtil.inputStreamToOutputStream(_inputStream, os, listener);
+    }
+
+    public long writeToStream(OutputStream os) throws IOException {
+        return StreamUtil.inputStreamToOutputStream(_inputStream, os, null);
     }
 }
