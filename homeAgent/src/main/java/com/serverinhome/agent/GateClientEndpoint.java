@@ -9,7 +9,7 @@ package com.serverinhome.agent;
  * @author chry
  */
 import com.serverinhome.util.http.HttpClient;
-import com.serverinhome.util.http.HttpClients;
+import com.serverinhome.util.http.MyHttpClients;
 import com.serverinhome.util.http.HttpResponseStream;
 import java.net.URI;
 import java.security.cert.CertificateException;
@@ -167,7 +167,7 @@ public class GateClientEndpoint {
                 } else {
                     url = message.substring(urlPos, urlEnd);
                 }
-                HttpClient httpClient = HttpClients.createApacheHttpInstance();
+                HttpClient httpClient = MyHttpClients.createApacheHttpInstance();
                 HttpResponseStream hrs = httpClient.get(url);
                 String rspMsg = hrs.decodeToString();
                 System.out.println(rspMsg);

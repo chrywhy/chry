@@ -8,8 +8,8 @@ package com.serverinhome.util.http;
  *
  * @author chry
  */
-public class HttpClients {
-    private HttpClients() {}
+public class MyHttpClients {
+    private MyHttpClients() {}
     public static JdkHttpClient getJdkHttpInstance() throws Exception {
         return JdkHttpClient.getInstance();
     }

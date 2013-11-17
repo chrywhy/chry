@@ -9,7 +9,7 @@ package com.serverinhome.agent;
  * @author chry
  */
 import com.serverinhome.util.http.HttpClient;
-import com.serverinhome.util.http.HttpClients;
+import com.serverinhome.util.http.MyHttpClients;
 import com.serverinhome.util.http.HttpPostStream;
 import com.serverinhome.util.http.HttpResponseStream;
 import com.serverinhome.util.http.websocket.WebsocketClient;
@@ -105,7 +105,7 @@ public class GateClient extends WebsocketClient {
                         url = message.substring(urlPos, urlEnd);
                     }
                     System.out.println("send http request - " + url);
-                    HttpClient httpClient = HttpClients.createApacheHttpInstance();
+                    HttpClient httpClient = MyHttpClients.createApacheHttpInstance();
                     HttpResponseStream hrs = httpClient.get(url);
 //                    sendHttpMessage(hrs);
                     sendHttpResponse(hrs);
@@ -134,8 +134,8 @@ public class GateClient extends WebsocketClient {
     }
 
     public void sendHttpResponse(HttpResponseStream hrs) throws Exception {
-        HttpClient hc = HttpClients.createApacheHttpInstance();
-        String url = "http://localhost:8080/response?user=chry&requestId=1";
+        HttpClient hc = MyHttpClients.createApacheHttpInstance();
+        String url = "https://localhost:8181/response?user=chry&requestId=1";
         HttpPostStream hps = new HttpPostStream(hrs);
         hc.post(url, hps);
     }
